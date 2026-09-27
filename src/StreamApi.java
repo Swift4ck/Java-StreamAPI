@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StreamApi {
     enum DayOfWeek {
@@ -35,8 +37,14 @@ public class StreamApi {
         var lisSheet = new WorkSheet("Лиза", List.of(DayOfWeek.THURSDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY));
         var sheets = List.of(denSheet, benSheet, lisSheet);
         // TODO: Необходимо вывести на экран дни в которые работало более 1 человека
-        // sheets.stream()
-        // .forEach(System.out::println);
+        sheets.stream()
+                .flatMap(workSheet -> workSheet.workDays.stream()
+                        .map(dayOfWeek -> Map.entry(dayOfWeek, workSheet.name)))
+                .collect(Collectors.groupingBy(entry -> entry.getKey()))
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().size() > 1)
+                .forEach(entry -> System.out.println(entry.getKey()));
     }
 
 
